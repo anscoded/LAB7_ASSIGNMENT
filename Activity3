@@ -1,0 +1,56 @@
+getwd()
+toy <- read.csv("C:/Users/Alifah/OneDrive/Documents/DS SEM IV/toydata.csv")
+
+plot(toy$X,toy$y,Xlab="X",ylab="y")
+
+#fitting a model
+lm(y~X, data=toy)
+
+#Exploring a data
+fit <- lm(y~X, data=toy)
+summary(fit)
+
+#Making prediction 
+yhat <- fit$coefficients[(1)] + fit$coefficients[(2)]*toy$X
+yhat
+yhat <- predict(fit,toy)
+yhat
+
+#Making plot
+plot(toy$y~toy$X)
+lines(toy$X,yhat,lwd=2)
+
+#Adjusting outlier
+fit2 <- lm(y~X, data=toy, subset=1:9)
+summary(fit2)
+
+yhat2 <- predict(fit2,toy)
+plot(toy$y~toy$X)
+lines(toy$X,yhat,lwd=2,col="red")
+
+#Evaluation
+mean((toy$y-yhat)^2) #include outlier
+mean((toy$y-yhat2)^2) #exclude outlier
+
+#Assumed calculated the MSE values
+mse1 <- mean((toy$y - yhat)^2)
+mse2 <- mean((toy$y - yhat2)^2)
+
+#Create a vector of the MSE values
+mse_values <- c(mse1, mse2)
+
+#Create a plot with lines
+plot(1:2, mse_values, type = "b", 
+     xlab = "Model", ylab = "Mean Squared Error",
+     xaxt = "n", ylim = c(0, max(mse_values) + 10))
+axis(1, at = 1:2, labels = c("With Outlier", "Without Outlier"))
+
+#Add points and labels for the MSE values
+points(1, mse1, pch = 16, col = "blue")
+points(2, mse2, pch = 16, col = "red")
+text(1, mse1, labels = round(mse1, 2), pos = 3)
+text(2, mse2, labels = round(mse2, 2), pos = 3)
+
+#Add legend()
+legend("topright", legend = c("With Outlier", "Without Outlier"),
+       col = c("blue", "red"), pch = 16, bty = "n")
